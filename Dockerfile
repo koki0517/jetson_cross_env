@@ -45,4 +45,9 @@ RUN mkdir -p /usr/lib/aarch64-linux-gnu && \
 WORKDIR /workspace
 
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
-RUN echo 'alias jbuild="colcon build --merge-install --cmake-args -DCMAKE_TOOLCHAIN_FILE=/workspace/Toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/workspace/install"' >> /root/.bashrc
+RUN echo 'jbuild() { \
+  if [ -z "$1" ]; then \
+    colcon build --merge-install --packages-ignore openmp_test openacc_test pepper_omni pepper_msgs practice2025 uec_robots --cmake-args -DCMAKE_TOOLCHAIN_FILE=/workspace/Toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/workspace/install; \
+  else \
+    colcon build --merge-install --packages-ignore openmp_test openacc_test pepper_omni pepper_msgs practice2025 uec_robots --packages-select "$1" --cmake-args -DCMAKE_TOOLCHAIN_FILE=/workspace/Toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/workspace/install; \
+  fi; }' >> /root/.bashrc
